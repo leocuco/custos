@@ -1,0 +1,30 @@
+{% extends "app/layout.html" %}
+
+{% block title %}Produto{% endblock %}
+
+{% block content %}
+
+<form class="row g-3 needs-validation"action method="POST" novalidate>
+    {% csrf_token %}
+
+    {{ form.as_p }}
+    <div class="text-end">
+        <button type="reset">Limpar</button>
+
+        <button type="submit" onclick="submitForm()">Gravar</button>
+
+        <a href="{% url 'produto_lista' %}">Voltar</a>
+    </div>
+</form>
+
+{% endblock %}
+
+<script>
+    function submitForm() {
+        // Submit the form
+        document.querySelector('form').submit();
+
+        // Redirect to the product list page
+        window.location.href = "{% url 'produto_lista' %}";
+    }
+</script>

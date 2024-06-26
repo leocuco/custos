@@ -1,0 +1,116 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<h1>Formulário de Cirurgia</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ cirurgia_form.as_p }}
+
+ <h2>Linhas de Cirurgia</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Unidade</th>
+                <th>Custo Unitário</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for linha_cirurgia_form in linha_cirurgia_formset %}
+                <tr>
+                    <td>{{ linha_cirurgia_form.codigo }}</td>
+                    <td>{{ linha_cirurgia_form.descricao }}</td>
+                    <td>{{ linha_cirurgia_form.unidade }}</td>
+                    <td>{{ linha_cirurgia_form.custoUnitario }}</td>
+                    <td>{{ linha_cirurgia_form.quantidade }}</td>
+                    <td>{{ linha_cirurgia_form.total }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table> 
+
+    <button type="submit">Salvar</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+        // Função para adicionar uma nova linha à tabela de detalhes
+        function adicionarLinha() {
+            var tabela = document.getElementById("detalhes").getElementsByTagName('tbody')[0];
+            var novaLinha = tabela.insertRow();
+            novaLinha.innerHTML = `
+            {% for linha_cirurgia_form in linha_cirurgia_formset %}
+                                    <tr>
+                                        <td>{{linha_cirurgia_form.codigo}}</td>
+                                        <td>{{linha_cirurgia_form.descricao}}</td>
+                                        <td>{{linha_cirurgia_form.unidade}}</td>
+                                        <td>{{linha_cirurgia_form.custoUnitario}}</td>
+                                        <td>{{linha_cirurgia_form.quantidade}}</td>
+                                        <td>{{linha_cirurgia_form.total }}</td>
+                                        <td><button type="button"
+                                                class="btn btn-danger"
+                                                onclick="removerLinha(this)">Remover</button></td>
+                                    </tr>
+                                    {% endfor %}
+               
+            `;
+        }
+    
+        // Função para remover uma linha da tabela de detalhes
+        function removerLinha(botao) {
+            var linha = botao.parentNode.parentNode;
+            var tabela = linha.parentNode;
+            tabela.removeChild(linha);
+            atualizarTotal(); // Atualizar o total após remover a linha
+        }
+    
+        // Função para atualizar o total da linha quando a quantidade ou preço forem alterados
+        function atualizarLinha(campo) {
+            var linha = campo.parentNode.parentNode;
+            var quantidade = parseFloat(linha.querySelector('input[name="quantidade[]"]').value) || 0;
+            var preco = parseFloat(linha.querySelector('input[name="preco[]"]').value) || 0;
+            var totalLinha = quantidade * preco;
+    
+            // Atualiza o campo total da linha
+            linha.querySelector('input[name="linha_total[]"]').value = totalLinha.toFixed(2);
+    
+            // Atualiza o total geral
+            atualizarTotal();
+        }
+    
+        // Função para atualizar o total geral com base nos valores de todas as linhas de detalhes
+        function atualizarTotal() {
+            var tabela = document.getElementById("detalhes").getElementsByTagName('tbody')[0];
+            var linhas = tabela.getElementsByTagName('tr');
+            var totalGeral = 0;
+    
+            // Percorre cada linha para calcular o total geral
+            for (var i = 0; i < linhas.length; i++) {
+                var linha = linhas[i];
+                var totalLinha = parseFloat(linha.querySelector('input[name="linha_total[]"]').value) || 0;
+                totalGeral += totalLinha;
+            }
+    
+            // Atualizar o campo total geral
+            document.getElementById("total").value = totalGeral.toFixed(2);
+        }
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+    integrity="sha384-BsnhLbv4jHoOVH3zO5L4MyWWcZeJNu6erLsLgRjbB9uASpLnKmP4vKx9KeFLl31M"
+    crossorigin="anonymous"></script>
+<script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-CX6hm1u2Q4onbQXi1G6B9j3o2yd9lmc8l1nT5P7mr2U3oNfOwejCq4qv1I5ufqm"
+    crossorigin="anonymous"></script>
+
+{% endblock %}

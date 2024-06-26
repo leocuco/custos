@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Cirurgia</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+            <h2>Criar Cirurgia</h2>
+            <!-- Campos para os dados da cirurgia -->
+            <div class="form-row">
+                <!-- Campos para os dados da cirurgia -->
+                <div class="form-group col-md-4">
+                    {{ form.procedimento.label_tag }}
+                    {{ form.data}}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.procedimento.label_tag }}
+                    {{ form.procedimento }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.paciente.label_tag }}
+                    {{ form.paciente }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.especialidade.label_tag }}
+                    {{ form.especialidade }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.tempoCirurgia.label_tag }}
+                    {{ form.tempoCirurgia }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.tempoInternacao.label_tag }}
+                    {{ form.tempoInternacao }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.localInternacao.label_tag }}
+                    {{ form.localInternacao }}
+                </div>
+            </div>
+
+            <!-- Linhas de Cirurgia -->
+            <h3>Linhas de Cirurgia</h3>
+            <table class="table table-bordered" id="detalhes">
+                <thead>
+                    <tr>
+                        <!-- Cabeçalhos da tabela -->
+                        <th>Código</th>
+                        <th>Descrição</th>
+                        <th>Unidade</th>
+                        <th>Custo Unitário</th>
+                        <th>Quantidade</th>
+                        <th>Total</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="formset-container">
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                    <form class="formset-row">
+                        <tr class="formset-row">
+                            <!-- Campos para cada coluna -->
+                            <td>{{ form.codigo }}</td>
+                            <td>{{ form.descricao }}</td>
+                            <td>{{ form.unidade }}</td>
+                            <td>{{ form.custoUnitario }}</td>
+                            <td>{{ form.quantidade }}</td>
+                            <td>{{ form.total }}</td>
+                            <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
+                        </tr>
+                    </form>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Botões -->
+            <div class="form-row mt-4">
+                <div class="form-group col-md-3">
+                    {{ form.custoFixo.label_tag }}
+                    {{ form.custoFixo }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ form.custoVariavel.label_tag }}
+                    {{ form.custoVariavel }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ form.custoTotal.label_tag }}
+                    {{ form.custoTotal }}
+                </div>
+            </div>
+            
+            <button type="button" class="btn btn-primary" onclick="adicionarLinha()">Adicionar Linha</button>
+            <button type="submit" class="btn btn-success">Salvar</button>
+        </div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Função para adicionar uma nova linha à tabela de detalhes
+        function adicionarLinha() {
+            var tabela = document.getElementById("formset-container");
+            var novaLinha = document.createElement('tr');
+            novaLinha.classList.add('formset-row');
+            novaLinha.innerHTML = `
+                <form class="formset-row">
+                    <!-- Campos para cada coluna -->
+                    <td>{{ formset.empty_form.codigo }}</td>
+                    <td>{{ formset.empty_form.descricao }}</td>
+                    <td>{{ formset.empty_form.unidade }}</td>
+                    <td>{{ formset.empty_form.custoUnitario }}</td>
+                    <td>{{ formset.empty_form.quantidade }}</td>
+                    <td>{{ formset.empty_form.total }}</td>
+                    <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
+                </form>
+            `;
+            tabela.appendChild(novaLinha);
+        }
+
+        // Função para remover uma linha da tabela de detalhes
+        function removerLinha(botao) {
+            var linha = botao.parentNode.parentNode;
+            linha.remove();
+        }
+    </script>
+</body>
+</html>

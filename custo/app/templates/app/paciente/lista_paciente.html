@@ -1,0 +1,58 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Lista</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Configuraçōes</a></li>
+        <li class="breadcrumb-item">Lista de Pacientes</li>
+        
+      </ol>
+      <a href="{% url "criar_paciente" %}">
+        <button type="button"  class="btn btn-outline-success" onclick="index.html">Novo</button>
+      </a>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <table class="table datatable table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th scope="col">Nome</th>
+                  <th scope="col">Nascimento</th>
+                  <th scope="col">ID</th>
+                </tr>
+              </thead>
+              {% for paciente in lista_paciente %}
+              <tr>
+                {% comment %} <td><a href="{% url 'procedimento'  procedimento.id %}">{{ produto.codigo }}</a></td>
+                <td><a href="{% url 'procedimento'  procedimento.id %}">{{ produto.preco|floatformat:2 }}</a></td> {% endcomment %}
+                <td><a href="{% url 'paciente' paciente.id %}">{{ paciente }}</a></td>
+                <td>{{ paciente.datanascimento }}</td>
+                <td><a href="{% url 'paciente' paciente.id %}">{{ paciente.id }}</a></td>
+                {% comment %} <td><a href="{% url 'produto'  produto.nome %}">{{ produto.valor|floatformat:2 }}</a></td> {% endcomment %}
+              </tr>
+              {% endfor %}
+
+            </table>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+{% endblock %}

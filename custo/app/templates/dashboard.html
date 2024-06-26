@@ -1,0 +1,31 @@
+<!-- templates/dashboard.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard de Cirurgias</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard de Cirurgias</h1>
+
+        <form method="get" class="form-inline">
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+
+        <div id="dashboard">
+            <h2>Custos Totais por Cirurgia</h2>
+            {{ graph_bar|safe }}
+
+            <h2>Detalhes das Cirurgias</h2>
+            {{ table_html|safe }}
+
+            <h2>Distribuição dos Custos por Procedimento</h2>
+            {{ graph_pie|safe }}
+        </div>
+    </div>
+</body>
+</html>

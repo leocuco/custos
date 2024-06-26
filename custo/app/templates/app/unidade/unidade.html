@@ -1,0 +1,52 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="pagetitle">
+  <h1>Lista</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Configuraçōes</a></li>
+      <li class="breadcrumb-item">Unidade</li>
+    </ol>
+  </nav>
+</div>
+
+<section class="section">
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="card">
+        <div class="card-body">
+            <h1>Detalhes:</h1>
+            <hr>
+
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Detalhes:</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ editar_unidade.nome}}</h6>
+                <p class = 'card-text'></p>
+                <strong>Sigla:</strong>{{ editar_unidade.sigla }} <br>
+                <strong>Unidade:</strong>{{ editar_unidade.nome }} <br>
+                <strong>Valor:</strong>{{ editar_unidade.valor }} <br>
+                {% comment %} {% if tipo_documento_de_stock.inactivo == False %}
+                <strong>Estado:</strong> inactivo <br>
+                {% else %}
+                <strong>Estado:</strong> activo <br>
+                {% endif %} {% endcomment %}
+                <div class = 'text-end'>
+                    <a href="{% url 'editar_unidade' unidade.id %}" class="btn btn-primary">Editar</a>
+                    <a href="{% url 'eliminar_unidade' unidade.id %}" class="btn btn-danger">Eliminar</a>
+                    <a href="{% url 'lista_unidade' %}" class="btn btn-white">Voltar</a>
+                </div>
+                </div>
+            </div><!-- End Card with titles, buttons, and links --> 
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

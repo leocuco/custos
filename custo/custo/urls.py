@@ -1,0 +1,75 @@
+"""
+Definition of urls for custo.
+"""
+
+from datetime import datetime
+from django.urls import path
+from django.contrib import admin
+from django.contrib.auth.views import LoginView, LogoutView
+from app import forms, views
+
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('contact/', views.contact, name='contact'),
+    path('about/', views.about, name='about'),
+    path('login/',
+         LoginView.as_view
+         (
+             template_name='app/login.html',
+             authentication_form=forms.BootstrapAuthenticationForm,
+             extra_context=
+             {
+                 'title': 'Log in',
+                 'year' : datetime.now().year,
+             }
+         ),
+         name='login'),
+    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    path('admin/', admin.site.urls),
+    #Produto
+    path('produto/', views.lista_de_produto, name='lista_de_produto'),
+    path('produto/novo', views.criar_produto, name='criar_produto'),
+    path('produto/<int:id>/', views.produto, name='produto'),
+    path('produto/editar/<int:id>/', views.editar_produto, name='editar_produto'),
+    path('produto/remover/<int:id>/', views.eliminar_produto, name='eliminar_produto'),
+    #Procedimento
+    path('procedimento/', views.lista_de_procedimento, name='lista_procedimento'),
+    path('procedimento/novo', views.criar_procedimento, name='criar_procedimento'),
+    path('procedimento/<int:id>/', views.procedimento, name='procedimento'),
+    path('procedimento/editar/<int:id>/', views.editar_procedimento, name='editar_procedimento'),
+    path('procedimento/remover/<int:id>/', views.eliminar_procedimento, name='eliminar_procedimento'),
+    #Unidade
+    path('unidade/', views.lista_unidade, name='lista_unidade'),
+    path('unidade/novo', views.criar_unidade, name='criar_unidade'),
+    path('unidade/<int:id>/', views.unidade, name='unidade'),
+    path('unidade/editar/<int:id>/', views.editar_unidade, name='editar_unidade'),
+    path('unidade/remover/<int:id>/', views.eliminar_unidade, name='eliminar_unidade'),
+    #Especialidade
+    path('especialidade/', views.lista_especialidade, name='lista_especialidade'),
+    path('especialidade/novo', views.criar_especialidade, name='criar_especialidade'),
+    path('especialidade/<int:id>/', views.especialidade, name='especialidade'),
+    path('especialidade/editar/<int:id>/', views.editar_especialidade, name='editar_especialidade'),
+    path('especialidade/remover/<int:id>/', views.eliminar_especialidade, name='eliminar_especialidade'),
+    #Paciente
+    path('paciente/', views.lista_paciente, name='lista_paciente'),
+    path('paciente/novo', views.criar_paciente, name='criar_paciente'),
+    path('paciente/<int:id>/', views.paciente, name='paciente'),
+    path('paciente/editar/<int:id>/', views.editar_paciente, name='editar_paciente'),
+    path('paciente/remover/<int:id>/', views.eliminar_paciente, name='eliminar_paciente'),
+    #Familia
+    path('familia/', views.lista_familia, name='lista_familia'),
+    path('familia/novo', views.criar_familia, name='criar_familia'),
+    path('familia/<int:id>/', views.familia, name='familia'),
+    path('familia/editar/<int:id>/', views.editar_familia, name='editar_familia'),
+    path('familia/remover/<int:id>/', views.eliminar_familia, name='eliminar_familia'),
+    #Cirurgia
+    path('cirurgia/', views.lista_cirurgia, name='lista_cirurgia'),
+    path('cirurgia/novo', views.criar_cirurgia, name='criar_cirurgia'),
+    path('cirurgia/<int:id>/', views.cirurgia, name='cirurgia'),
+    path('cirurgia/editar/<int:id>/', views.editar_cirurgia, name='editar_cirurgia'),
+    path('cirurgia/remover/<int:id>/', views.eliminar_cirurgia, name='eliminar_cirurgia'),
+    #Dashboard
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+
+]

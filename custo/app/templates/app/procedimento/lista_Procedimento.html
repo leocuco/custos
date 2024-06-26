@@ -1,0 +1,56 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Lista</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Configuraçōes</a></li>
+        <li class="breadcrumb-item">Lista de Procedimentos</li>
+        
+      </ol>
+      <a href="{% url "criar_procedimento" %}">
+        <button type="button"  class="btn btn-outline-success" onclick="index.html">Novo</button>
+      </a>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <table class="table datatable table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th scope="col">Descriçāo</th>
+                  <th scope="col">ID</th>
+                </tr>
+              </thead>
+              {% for procedimento in lista_procedimento%}
+              <tr>
+                {% comment %} <td><a href="{% url 'procedimento'  procedimento.id %}">{{ produto.codigo }}</a></td>
+                <td><a href="{% url 'procedimento'  procedimento.id %}">{{ produto.preco|floatformat:2 }}</a></td> {% endcomment %}
+                <td><a href="{% url 'procedimento'  procedimento.id %}">{{ procedimento.descricao }}</a></td>
+                <td><a href="{% url 'procedimento' procedimento.id %}">{{ procedimento.id }}</a></td>
+                {% comment %} <td><a href="{% url 'produto'  produto.nome %}">{{ produto.valor|floatformat:2 }}</a></td> {% endcomment %}
+              </tr>
+              {% endfor %}
+
+            </table>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+{% endblock %}

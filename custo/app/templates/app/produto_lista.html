@@ -1,0 +1,41 @@
+{% extends "app/layout.html" %}
+
+{% block title %}Produto{% endblock %}
+
+{% block content %}
+
+<h1>Lista de Produtos</h1>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+        <tr >
+            <th>Código</th>
+            <th>Preço</th>
+            <th>Descrição</th>
+            <th>Id</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produto in produtos %}
+        <tr>
+            <td>{{ produto.codigo }}</td>
+            <td>{{ produto.preco }}</td>
+            <td>{{ produto.descricao }}</td>
+            <td>{{ produto.id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'produto_novo' %}">Novo</a>
+
+{% endblock %}
+
+<table class="table">
+    <thead class="table-dark">
+      ...
+    </thead>
+    <tbody>
+      ...
+    </tbody>
+  </table>
