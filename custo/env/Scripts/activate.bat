@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\ICOR\Documents\GitHub\custo\env
+set VIRTUAL_ENV=C:\Users\Surface\source\repos\custos\custo\env
 
 if not defined PROMPT set PROMPT=$P$G
 

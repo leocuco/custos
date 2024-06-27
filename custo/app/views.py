@@ -11,6 +11,7 @@ from django.forms import formset_factory, inlineformset_factory
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.colors as plotly_colors
 from django.db import connection
 
 def home(request):
@@ -348,3 +349,4 @@ def dashboard_view(request):
         'graph_pie': graph_pie,
         'form': form
     })
+
