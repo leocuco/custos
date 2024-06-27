@@ -1,0 +1,50 @@
+<script>
+  // Função para adicionar uma nova linha à tabela de detalhes
+  function adicionarLinha() {
+      var tabela = document.getElementById("formset-container");
+      var novaLinha = document.createElement('tr');
+      novaLinha.classList.add('formset-row');
+      novaLinha.innerHTML = `
+          <form class="formset-row">
+              <!-- Campos para cada coluna -->
+              <td>{{ formset.empty_form.codigo }}</td>
+              <td>{{ formset.empty_form.descricao }}</td>
+              <td>{{ formset.empty_form.unidade }}</td>
+              <td>{{ formset.empty_form.custoUnitario }}</td>
+              <td>{{ formset.empty_form.quantidade }}</td>
+              <td>{{ formset.empty_form.total }}</td>
+              <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
+          </form>
+      `;
+      tabela.appendChild(novaLinha);
+  }
+
+  // Função para remover uma linha da tabela de detalhes
+  function removerLinha(botao) {
+      var linha = botao.parentNode.parentNode;
+      linha.remove();
+  }
+
+  // Função para submeter o formulário
+  function submitForm() {
+      var formRows = document.getElementsByClassName("formset-row");
+      var formData = [];
+
+      for (var i = 0; i < formRows.length; i++) {
+          var formRow = formRows[i];
+          var inputs = formRow.getElementsByTagName("input");
+
+          var rowValues = {};
+          for (var j = 0; j < inputs.length; j++) {
+              var input = inputs[j];
+              rowValues[input.name] = input.value;
+          }
+
+          formData.push(rowValues);
+      }
+
+      // Submit the form data to the server
+      // Replace the following code with your actual form submission logic
+      console.log(formData);
+  }
+</script>

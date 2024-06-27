@@ -32,7 +32,7 @@ class Produto(models.Model):
     tipoCusto = models.TextField(choices=TIPO_CUSTO_CHOICES, null=True)
 
     def __str__(self):
-        return self.codigo
+        return self.descricao
     
     class Meta:
         verbose_name_plural = 'Produtos'
@@ -98,8 +98,8 @@ class Cirurgia(models.Model):
     custoTotal = models.DecimalField(max_digits=10, decimal_places= 2)
     data = models.DateField(default=date.today)  # Campo data adicionado
 
-    # def __str__(self):
-    #     return self.procedimento
+    def __str__(self):
+        return f"Cirurgia {self.procedimento} - {self.paciente}"
     
     class Meta:
         verbose_name_plural = 'Cirurgias'
@@ -116,7 +116,7 @@ class LinhasCirurgia(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return self.descricao
+        return f"Linha {self.codigo} - {self.descricao}"
     
     def titalLinha(self):
         return self.quantidade * self.custoUnitario
@@ -124,3 +124,4 @@ class LinhasCirurgia(models.Model):
     class Meta:
         verbose_name_plural = 'LinhasCirurgias'
         verbose_name = 'LinhaCirurgia'
+

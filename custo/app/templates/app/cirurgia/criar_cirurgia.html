@@ -1,132 +1,123 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Criar Cirurgia</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        <div class="container">
-            <h2>Criar Cirurgia</h2>
-            <!-- Campos para os dados da cirurgia -->
-            <div class="form-row">
-                <!-- Campos para os dados da cirurgia -->
-                <div class="form-group col-md-4">
-                    {{ form.procedimento.label_tag }}
-                    {{ form.data}}
-                </div>
-                <div class="form-group col-md-4">
-                    {{ form.procedimento.label_tag }}
-                    {{ form.procedimento }}
-                </div>
-                <div class="form-group col-md-4">
-                    {{ form.paciente.label_tag }}
-                    {{ form.paciente }}
-                </div>
-                <div class="form-group col-md-4">
-                    {{ form.especialidade.label_tag }}
-                    {{ form.especialidade }}
-                </div>
-                <div class="form-group col-md-4">
-                    {{ form.tempoCirurgia.label_tag }}
-                    {{ form.tempoCirurgia }}
-                </div>
-                <div class="form-group col-md-4">
-                    {{ form.tempoInternacao.label_tag }}
-                    {{ form.tempoInternacao }}
-                </div>
-                <div class="form-group col-md-4">
-                    {{ form.localInternacao.label_tag }}
-                    {{ form.localInternacao }}
-                </div>
-            </div>
+{% extends "app/layout.html" %}
 
-            <!-- Linhas de Cirurgia -->
-            <h3>Linhas de Cirurgia</h3>
-            <table class="table table-bordered" id="detalhes">
-                <thead>
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Criar Cirurgia</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb
+-item"><a href="index.html">Configuraçōes</a></li>
+        <li class="breadcrumb-item">Criar Cirurgia</li>
+        
+      </ol>
+      <a href="{% url "lista_cirurgia" %}">
+        <button type="button"  class="btn btn-outline-success" onclick="index.html">Voltar</button>
+      </a>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
+              <div class="form-group
+">
+                <label for="procedimento">Procedimento</label>
+                <select class="form-control" id="procedimento" name="procedimento">
+                  {% for procedimento in procedimentos %}
+                  <option value="{{ procedimento.id }}">{{ procedimento.nome }}</option>
+                  {% endfor %}
+                </select>
+                </div>
+                <div class="form-group
+">
+
+                <label for="paciente">Paciente</label>
+                <select class="form-control" id="paciente" name="paciente">
+                  {% for paciente in pacientes %}
+                  <option value="{{ paciente.id }}">{{ paciente.nome }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group
+">
+                <label for="data">Data</label>
+                <input type="date" class="form-control" id="data" name="data">
+                </div>
+                <div class="form-group
+">
+                <label for="hora">Hora</label>
+                <input type="time" class="form-control" id="hora" name="hora">
+                </div>
+                <div class="form-group
+">
+                <label for="sala">Sala</label>
+                <input type="text" class="form-control" id="sala" name="sala">
+                </div>
+                <div class="form-group
+">
+                <label for="observacao">Observação</label>
+                <textarea class="form-control" id="observacao" name="observacao"></textarea>
+                </div>
+                <div class="form-group
+">
+                <label for="status">Status</label>
+                <select class="form-control" id="status" name="status">
+                  <option value="1">Agendado</option>
+                  <option value="2">Realizado</option>
+                  <option value="3">Cancelado</option>
+                </select>
+              </div>
+              <div class="form-group
+">
+                <label for="detalhes">Detalhes</label>
+                <table class="table table-bordered" id="formset-container">
+                  <thead>
                     <tr>
-                        <!-- Cabeçalhos da tabela -->
-                        <th>Código</th>
-                        <th>Descrição</th>
-                        <th>Unidade</th>
-                        <th>Custo Unitário</th>
-                        <th>Quantidade</th>
-                        <th>Total</th>
-                        <th>Ações</th>
+                      <th>Código</th>
+                      <th>Descrição</th>
+                      <th>Unidade</th>
+                      <th>Custo Unitário</th>
+                      <th>Quantidade</th>
+                      <th>Total</th>
+                      <th>Ações</th>
                     </tr>
-                </thead>
-                <tbody id="formset-container">
-                    {{ formset.management_form }}
-                    {% for form in formset %}
-                    <form class="formset-row">
-                        <tr class="formset-row">
-                            <!-- Campos para cada coluna -->
-                            <td>{{ form.codigo }}</td>
-                            <td>{{ form.descricao }}</td>
-                            <td>{{ form.unidade }}</td>
-                            <td>{{ form.custoUnitario }}</td>
-                            <td>{{ form.quantidade }}</td>
-                            <td>{{ form.total }}</td>
-                            <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
-                        </tr>
-                    </form>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <!-- Botões -->
-            <div class="form-row mt-4">
-                <div class="form-group col-md-3">
-                    {{ form.custoFixo.label_tag }}
-                    {{ form.custoFixo }}
+                  </thead>
+                  <tbody>
+                    <tr class="formset-row">
+                      <td>{{ formset.empty_form.codigo }}</td>
+                      <td>{{ formset.empty_form.descricao }}</td>
+                      <td>{{ formset.empty_form.unidade }}</td>
+                      <td>{{ formset.empty_form.custoUnitario }}</td>
+                      <td>{{ formset.empty_form.quantidade }}</td>
+                      <td>{{ formset.empty_form.total }}</td>
+                      <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button type="button" class="btn btn-primary" onclick="adicionarLinha()">Adicionar Detalhe</button>
                 </div>
-                <div class="form-group col-md-3">
-                    {{ form.custoVariavel.label_tag }}
-                    {{ form.custoVariavel }}
-                </div>
-                <div class="form-group col-md-3">
-                    {{ form.custoTotal.label_tag }}
-                    {{ form.custoTotal }}
-                </div>
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </form>
             </div>
-            
-            <button type="button" class="btn btn-primary" onclick="adicionarLinha()">Adicionar Linha</button>
-            <button type="submit" class="btn btn-success">Salvar</button>
         </div>
-    </form>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Função para adicionar uma nova linha à tabela de detalhes
-        function adicionarLinha() {
-            var tabela = document.getElementById("formset-container");
-            var novaLinha = document.createElement('tr');
-            novaLinha.classList.add('formset-row');
-            novaLinha.innerHTML = `
-                <form class="formset-row">
-                    <!-- Campos para cada coluna -->
-                    <td>{{ formset.empty_form.codigo }}</td>
-                    <td>{{ formset.empty_form.descricao }}</td>
-                    <td>{{ formset.empty_form.unidade }}</td>
-                    <td>{{ formset.empty_form.custoUnitario }}</td>
-                    <td>{{ formset.empty_form.quantidade }}</td>
-                    <td>{{ formset.empty_form.total }}</td>
-                    <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
-                </form>
-            `;
-            tabela.appendChild(novaLinha);
-        }
+        </div>
+    </div>
+    </section>
 
-        // Função para remover uma linha da tabela de detalhes
-        function removerLinha(botao) {
-            var linha = botao.parentNode.parentNode;
-            linha.remove();
-        }
-    </script>
-</body>
-</html>
+</main>
+
+
+{% endblock %}
+
+
+
+
+

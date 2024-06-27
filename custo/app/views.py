@@ -260,21 +260,40 @@ def lista_cirurgia(request):
     lista_cirurgia= Cirurgia.objects.all()
     return render(request, 'app/cirurgia/lista_cirurgia.html', {'lista_cirurgia': lista_cirurgia})
 
+# def criar_cirurgia(request):
+#     if request.method == 'POST':
+#         form = CirurgiaForm(request.POST)
+#         formset = LinhaCirurgiaFormset(request.POST, request.FILES)
+#         if form.is_valid() and formset.is_valid():
+#             cirurgia = form.save()  # Salva a cirurgia principal
+#             linhas = formset.save(commit=False)  # Salva as instâncias de linha temporariamente
+#             for linha in linhas:
+#                 linha.cirurgia = cirurgia  # Associa a cirurgia a cada instância de linha
+#                 linha.save()  # Salva a instância de linha individualmente
+#             return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
+#     else:
+#         form = CirurgiaForm()
+#         formset = LinhaCirurgiaFormset()
+#     return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
+
 def criar_cirurgia(request):
     if request.method == 'POST':
         form = CirurgiaForm(request.POST)
-        formset = LinhaCirurgiaFormset(request.POST, request.FILES)
+        formset = LinhaCirurgiaFormset(request.POST)
         if form.is_valid() and formset.is_valid():
             cirurgia = form.save()  # Salva a cirurgia principal
             linhas = formset.save(commit=False)  # Salva as instâncias de linha temporariamente
             for linha in linhas:
                 linha.cirurgia = cirurgia  # Associa a cirurgia a cada instância de linha
                 linha.save()  # Salva a instância de linha individualmente
+            formset.save_m2m()  # Salva as relações Many-to-Many se houver
             return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
     else:
         form = CirurgiaForm()
         formset = LinhaCirurgiaFormset()
     return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
+
+
 
 
 def editar_cirurgia(request, id):
@@ -304,6 +323,52 @@ def cirurgia(request, id):
 
 
 
+# def dashboard_view(request):
+#     form = DashboardFilterForm(request.GET or None)
+
+#     # Filtrando os dados
+#     cirurgias = Cirurgia.objects.all()
+#     if form.is_valid():
+#         ano = form.cleaned_data.get('ano')
+#         mes = form.cleaned_data.get('mes')
+#         cirurgia_id = form.cleaned_data.get('cirurgia')
+
+#         if ano:
+#             cirurgias = cirurgias.filter(data__year=ano)
+#         if mes:
+#             cirurgias = cirurgias.filter(data__month=mes)
+#         if cirurgia_id:
+#             cirurgias = cirurgias.filter(id=cirurgia_id.id)
+
+#     # Processando os dados
+#     df = pd.DataFrame(list(cirurgias.values()))
+
+#     if not df.empty:
+#         # Paleta de cores vibrante
+#         colors = px.colors.qualitative.Plotly
+
+#         # Gráfico de barras
+#         fig_bar = px.bar(df, x='data', y='custoTotal', color='procedimento_id', title='Custos Totais por Cirurgia', color_discrete_sequence=colors)
+#         graph_bar = fig_bar.to_html(full_html=False)
+
+#         # Tabela
+#         table_html = df.to_html(classes='table table-striped', index=False)
+
+#         # Gráfico de pizza
+#         fig_pie = px.pie(df, names='procedimento_id', values='custoTotal', title='Distribuição dos Custos por Procedimento', color_discrete_sequence=colors)
+#         graph_pie = fig_pie.to_html(full_html=False)
+#     else:
+#         graph_bar = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+#         table_html = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+#         graph_pie = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+
+#     return render(request, 'dashboard.html', {
+#         'graph_bar': graph_bar,
+#         'table_html': table_html,
+#         'graph_pie': graph_pie,
+#         'form': form
+#     })
+
 def dashboard_view(request):
     form = DashboardFilterForm(request.GET or None)
 
@@ -329,14 +394,29 @@ def dashboard_view(request):
         colors = px.colors.qualitative.Plotly
 
         # Gráfico de barras
-        fig_bar = px.bar(df, x='data', y='custoTotal', color='procedimento_id', title='Custos Totais por Cirurgia', color_discrete_sequence=colors)
+        fig_bar = px.bar(
+            df, 
+            x='data', 
+            y='custoTotal', 
+            color='procedimento_id', 
+            title='Custos Totais por Cirurgia', 
+            color_discrete_sequence=colors, 
+            barmode='group'
+        )
+        fig_bar.update_layout(barmode='group')
         graph_bar = fig_bar.to_html(full_html=False)
 
         # Tabela
         table_html = df.to_html(classes='table table-striped', index=False)
 
         # Gráfico de pizza
-        fig_pie = px.pie(df, names='procedimento_id', values='custoTotal', title='Distribuição dos Custos por Procedimento', color_discrete_sequence=colors)
+        fig_pie = px.pie(
+            df, 
+            names='procedimento_id', 
+            values='custoTotal', 
+            title='Distribuição dos Custos por Procedimento', 
+            color_discrete_sequence=colors
+        )
         graph_pie = fig_pie.to_html(full_html=False)
     else:
         graph_bar = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
@@ -349,4 +429,3 @@ def dashboard_view(request):
         'graph_pie': graph_pie,
         'form': form
     })
-
