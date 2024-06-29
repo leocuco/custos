@@ -260,38 +260,38 @@ def lista_cirurgia(request):
     lista_cirurgia= Cirurgia.objects.all()
     return render(request, 'app/cirurgia/lista_cirurgia.html', {'lista_cirurgia': lista_cirurgia})
 
-# def criar_cirurgia(request):
-#     if request.method == 'POST':
-#         form = CirurgiaForm(request.POST)
-#         formset = LinhaCirurgiaFormset(request.POST, request.FILES)
-#         if form.is_valid() and formset.is_valid():
-#             cirurgia = form.save()  # Salva a cirurgia principal
-#             linhas = formset.save(commit=False)  # Salva as instâncias de linha temporariamente
-#             for linha in linhas:
-#                 linha.cirurgia = cirurgia  # Associa a cirurgia a cada instância de linha
-#                 linha.save()  # Salva a instância de linha individualmente
-#             return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
-#     else:
-#         form = CirurgiaForm()
-#         formset = LinhaCirurgiaFormset()
-#     return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
-
 def criar_cirurgia(request):
     if request.method == 'POST':
         form = CirurgiaForm(request.POST)
-        formset = LinhaCirurgiaFormset(request.POST)
+        formset = LinhaCirurgiaFormset(request.POST, request.FILES)
         if form.is_valid() and formset.is_valid():
             cirurgia = form.save()  # Salva a cirurgia principal
             linhas = formset.save(commit=False)  # Salva as instâncias de linha temporariamente
             for linha in linhas:
                 linha.cirurgia = cirurgia  # Associa a cirurgia a cada instância de linha
                 linha.save()  # Salva a instância de linha individualmente
-            formset.save_m2m()  # Salva as relações Many-to-Many se houver
             return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
     else:
         form = CirurgiaForm()
         formset = LinhaCirurgiaFormset()
     return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
+
+# def criar_cirurgia(request):
+#     if request.method == 'POST':
+#         form = CirurgiaForm(request.POST)
+#         formset = LinhaCirurgiaFormset(request.POST)
+#         if form.is_valid() and formset.is_valid():
+#             cirurgia = form.save()  # Salva a cirurgia principal
+#             linhas = formset.save(commit=False)  # Salva as instâncias de linha temporariamente
+#             for linha in linhas:
+#                 linha.cirurgia = cirurgia  # Associa a cirurgia a cada instância de linha
+#                 linha.save()  # Salva a instância de linha individualmente
+#             formset.save_m2m()  # Salva as relações Many-to-Many se houver
+#             return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
+#     else:
+#         form = CirurgiaForm()
+#         formset = LinhaCirurgiaFormset()
+#     return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
 
 
 

@@ -217,9 +217,9 @@ class LinhasCirurgiaForm(forms.ModelForm):
             'total': 'Total'
         }
         widgets = {
-            'codigo': forms.TextInput(attrs={'class': 'form-control'}),
+            'codigo': forms.Select(attrs={'class': 'form-control'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control'}),
-            'unidade': forms.TextInput(attrs={'class': 'form-control'}),
+            'unidade': forms.Select(attrs={'class': 'form-control'}),
             'custoUnitario': forms.NumberInput(attrs={'class': 'form-control'}),
             'quantidade': forms.NumberInput(attrs={'class': 'form-control'}),
             'total': forms.NumberInput(attrs={'class': 'form-control'}),
