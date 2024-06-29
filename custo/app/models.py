@@ -27,7 +27,7 @@ class Produto(models.Model):
     codigo = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     descricao = models.TextField()
-    unidade = models.CharField(max_length=10, null=True)
+    unidade = models.ForeignKey('Unidade', on_delete=models.CASCADE)
     familia = models.ForeignKey(Familia, on_delete=models.CASCADE, null=True)
     tipoCusto = models.TextField(choices=TIPO_CUSTO_CHOICES, null=True)
 
@@ -109,17 +109,24 @@ class Cirurgia(models.Model):
 class LinhasCirurgia(models.Model):
     cirurgia = models.ForeignKey(Cirurgia, on_delete=models.CASCADE)
     codigo = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    descricao = models.CharField(max_length=150)
-    unidade = models.ForeignKey(Unidade,on_delete=models.CASCADE)
-    custoUnitario = models.DecimalField(max_digits=10, decimal_places=2)
+    descricao = models.CharField(max_length=150, blank=True)  # Make it optional initially
+    unidade = models.ForeignKey(Unidade, on_delete=models.CASCADE, null=True, blank=True)  # Allow blank initially
+    custoUnitario = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Allow blank initially
     quantidade = models.IntegerField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def save(self, *args, **kwargs):
+        if not self.descricao:
+            self.descricao = self.codigo.descricao
+        if not self.unidade:
+            self.unidade = self.codigo.unidade
+        if not self.custoUnitario:
+            self.custoUnitario = self.codigo.preco  # Assuming 'preco' is the unit cost in 'Produto'
+        self.total = self.quantidade * self.custoUnitario  # Calculate total based on quantity and unit cost
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Linha {self.codigo} - {self.descricao}"
-    
-    def titalLinha(self):
-        return self.quantidade * self.custoUnitario
     
     class Meta:
         verbose_name_plural = 'LinhasCirurgias'

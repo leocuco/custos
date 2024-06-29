@@ -1,0 +1,18 @@
+/* static/css/admin_custom.css */
+.field-codigo, .field-descricao, .field-unidade, .field-custoUnitario, .field-quantidade, .field-total {
+    width: 120px;  /* Ajuste o tamanho conforme necessário */
+}
+
+.inline-related {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-group {
+    margin-right: 10px;
+}
