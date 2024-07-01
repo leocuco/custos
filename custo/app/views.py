@@ -4,15 +4,18 @@ Definition of views.
 
 from datetime import datetime
 from django.shortcuts import render, redirect
-from django.http import HttpRequest 
-from app.models import Produto, Procedimento, Unidade, Especialidade, Paciente, Cirurgia , Familia, LinhasCirurgia
-from app.forms import ProdutoForm, ProcedimentoForm, UnidadeForm, EspecialidadeForm , PacienteForm,CirurgiaForm, FamiliaForm, LinhaCirurgiaFormset,DashboardFilterForm
+from django.http import HttpRequest , JsonResponse
+from app.models import Produto, Procedimento, Unidade, Especialidade, Paciente, Cirurgia , Familia, LinhasCirurgia, PorteCirurgico,PorteCirurgicoCirurgia
+from app.forms import ProdutoForm, ProcedimentoForm, UnidadeForm, EspecialidadeForm , PacienteForm,CirurgiaForm, FamiliaForm,DashboardFilterForm, PorteCirurgicoForm,PorteCirurgicoCirurgiaForm
 from django.forms import formset_factory, inlineformset_factory
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.colors as plotly_colors
 from django.db import connection
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView
+from .forms import CirurgiaForm, LinhasCirurgiaFormSet
 
 def home(request):
     """Renders the home page."""
@@ -255,38 +258,98 @@ def familia(request, id):
     return render(request, 'app/familia/familia.html', {'familia':familia})
 
 
+#Porte Cirurgico
+def lista_porte(request):
+    lista_porte= PorteCirurgico.objects.all()
+    return render(request, 'app/portecirurgico/lista_porte.html', {'lista_porte': lista_porte})
+
+def criar_porte(request):
+    form = PorteCirurgicoForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('lista_porte')
+    else:
+        return render(request, 'app/portecirurgico/criar_porte.html', {'form': form})
+    
+def editar_porte(request, id):
+    porte = PorteCirurgico.objects.get(id=id)
+    form = PorteCirurgicoForm(request.POST or None, instance=porte)
+    if form.is_valid():
+        form.save()
+        return redirect('lista_porte')
+    else:
+        return render(request, 'app/portecirurgico/criar_porte.html', {'form': form})
+
+def eliminar_porte(request, id):
+    eliminar_porte = PorteCirurgico.objects.get(id=id)
+    eliminar_porte.delete()
+    return redirect('lista_porte')
+
+def porte(request, id):
+    porte = PorteCirurgico.objects.get(id=id)
+    return render(request, 'app/portecirurgico/porte.html', {'porte':porte})
+
+#Porte Cirurgico Cirurgia
+def lista_portecirurgia(request):
+    lista_portecirurgia= PorteCirurgicoCirurgia.objects.all()
+    return render(request, 'app/portecirurgia/lista_portecirurgia.html', {'lista_portecirurgia': lista_portecirurgia})
+
+def criar_portecirurgia(request):
+    form = PorteCirurgicoCirurgiaForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('lista_portecirurgia')
+    else:
+        return render(request, 'app/portecirurgia/criar_portecirurgia.html', {'form': form})
+    
+
+def editar_portecirurgia(request, id):
+    portecirurgia = PorteCirurgicoCirurgia.objects.get(id=id)
+    form = PorteCirurgicoCirurgiaForm(request.POST or None, instance=portecirurgia)
+    if form.is_valid():
+        form.save()
+        return redirect('lista_portecirurgia')
+    else:
+        return render(request, 'app/portecirurgia/criar_portecirurgia.html', {'form': form})
+
+
+def eliminar_portecirurgia(request, id):
+    eliminar_portecirurgia = PorteCirurgicoCirurgia.objects.get(id=id)
+    eliminar_portecirurgia.delete()
+    return redirect('lista_portecirurgia')
+
+def portecirurgia(request, id):
+    portecirurgia = PorteCirurgicoCirurgia.objects.get(id=id)
+    return render(request, 'app/portecirurgia/portecirurgia.html', {'portecirurgia':portecirurgia})
+
+
+
+
+
+
+
+
+
+
+
+
+# Cirurgia
 
 def lista_cirurgia(request):
     lista_cirurgia= Cirurgia.objects.all()
     return render(request, 'app/cirurgia/lista_cirurgia.html', {'lista_cirurgia': lista_cirurgia})
 
-def criar_cirurgia(request):
-    if request.method == 'POST':
-        form = CirurgiaForm(request.POST)
-        formset = LinhaCirurgiaFormset(request.POST, request.FILES)
-        if form.is_valid() and formset.is_valid():
-            cirurgia = form.save()  # Salva a cirurgia principal
-            linhas = formset.save(commit=False)  # Salva as instâncias de linha temporariamente
-            for linha in linhas:
-                linha.cirurgia = cirurgia  # Associa a cirurgia a cada instância de linha
-                linha.save()  # Salva a instância de linha individualmente
-            return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
-    else:
-        form = CirurgiaForm()
-        formset = LinhaCirurgiaFormset()
-    return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
 
 # def criar_cirurgia(request):
 #     if request.method == 'POST':
 #         form = CirurgiaForm(request.POST)
-#         formset = LinhaCirurgiaFormset(request.POST)
+#         formset = LinhaCirurgiaFormset(request.POST, request.FILES)
 #         if form.is_valid() and formset.is_valid():
 #             cirurgia = form.save()  # Salva a cirurgia principal
 #             linhas = formset.save(commit=False)  # Salva as instâncias de linha temporariamente
 #             for linha in linhas:
 #                 linha.cirurgia = cirurgia  # Associa a cirurgia a cada instância de linha
 #                 linha.save()  # Salva a instância de linha individualmente
-#             formset.save_m2m()  # Salva as relações Many-to-Many se houver
 #             return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
 #     else:
 #         form = CirurgiaForm()
@@ -295,79 +358,34 @@ def criar_cirurgia(request):
 
 
 
-
-def editar_cirurgia(request, id):
-    if request.method == 'POST':
-        form = CirurgiaForm(request.POST)
-        formset = LinhaCirurgiaFormset(request.POST, request.FILES)
-        if form.is_valid() and formset.is_valid():
-            cirurgia = form.save()
-            linhas = formset.save(commit=False)
-            for linha in linhas:
-                linha.cirurgia = cirurgia
-                linha.save()
-            return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
-    else:
-        form = CirurgiaForm()
-        formset = LinhaCirurgiaFormset()
-    return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
-
-def eliminar_cirurgia(request, id):
-    eliminar_cirurgia = Cirurgia.objects.get(id=id)
-    eliminar_cirurgia.delete()
-    return redirect('lista_cirurgia')
-
-def cirurgia(request, id):
-    cirurgia = Cirurgia.objects.get(id=id)
-    return render(request, 'app/cirurgia/cirurgia.html', {'cirurgia':cirurgia})
-
-
-
-# def dashboard_view(request):
-#     form = DashboardFilterForm(request.GET or None)
-
-#     # Filtrando os dados
-#     cirurgias = Cirurgia.objects.all()
-#     if form.is_valid():
-#         ano = form.cleaned_data.get('ano')
-#         mes = form.cleaned_data.get('mes')
-#         cirurgia_id = form.cleaned_data.get('cirurgia')
-
-#         if ano:
-#             cirurgias = cirurgias.filter(data__year=ano)
-#         if mes:
-#             cirurgias = cirurgias.filter(data__month=mes)
-#         if cirurgia_id:
-#             cirurgias = cirurgias.filter(id=cirurgia_id.id)
-
-#     # Processando os dados
-#     df = pd.DataFrame(list(cirurgias.values()))
-
-#     if not df.empty:
-#         # Paleta de cores vibrante
-#         colors = px.colors.qualitative.Plotly
-
-#         # Gráfico de barras
-#         fig_bar = px.bar(df, x='data', y='custoTotal', color='procedimento_id', title='Custos Totais por Cirurgia', color_discrete_sequence=colors)
-#         graph_bar = fig_bar.to_html(full_html=False)
-
-#         # Tabela
-#         table_html = df.to_html(classes='table table-striped', index=False)
-
-#         # Gráfico de pizza
-#         fig_pie = px.pie(df, names='procedimento_id', values='custoTotal', title='Distribuição dos Custos por Procedimento', color_discrete_sequence=colors)
-#         graph_pie = fig_pie.to_html(full_html=False)
+# def editar_cirurgia(request, id):
+#     if request.method == 'POST':
+#         form = CirurgiaForm(request.POST)
+#         formset = LinhaCirurgiaFormset(request.POST, request.FILES)
+#         if form.is_valid() and formset.is_valid():
+#             cirurgia = form.save()
+#             linhas = formset.save(commit=False)
+#             for linha in linhas:
+#                 linha.cirurgia = cirurgia
+#                 linha.save()
+#             return redirect('lista_cirurgia')  # Substitua pelo nome da sua view de lista de cirurgias
 #     else:
-#         graph_bar = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
-#         table_html = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
-#         graph_pie = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+#         form = CirurgiaForm()
+#         formset = LinhaCirurgiaFormset()
+#     return render(request, 'app/cirurgia/criar_cirurgia.html', {'form': form, 'formset': formset})
 
-#     return render(request, 'dashboard.html', {
-#         'graph_bar': graph_bar,
-#         'table_html': table_html,
-#         'graph_pie': graph_pie,
-#         'form': form
-#     })
+# def eliminar_cirurgia(request, id):
+#     eliminar_cirurgia = Cirurgia.objects.get(id=id)
+#     eliminar_cirurgia.delete()
+#     return redirect('lista_cirurgia')
+
+# def cirurgia(request, id):
+#     cirurgia = Cirurgia.objects.get(id=id)
+#     return render(request, 'app/cirurgia/cirurgia.html', {'cirurgia':cirurgia})
+
+
+
+#Dashboard
 
 def dashboard_view(request):
     form = DashboardFilterForm(request.GET or None)
@@ -429,3 +447,80 @@ def dashboard_view(request):
         'graph_pie': graph_pie,
         'form': form
     })
+
+
+
+#Cirurgia
+
+# Classe para criar uma nova Cirurgia
+class CirurgiaCreateView(CreateView):
+    model = Cirurgia  # Define o modelo como Cirurgia
+    form_class = CirurgiaForm  # Define a classe do formulário como CirurgiaForm
+    template_name = 'app/cirurgia/cirurgia_form.html'  # Define o nome do template como 'app/cirurgia/cirurgia_form.html'
+    success_url = reverse_lazy('lista_cirurgia')  # Define a URL de redirecionamento após o sucesso como 'lista_cirurgia'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)  # Obtém os dados do contexto da superclasse
+        if self.request.POST:
+            data['formset'] = LinhasCirurgiaFormSet(self.request.POST)  # Cria uma instância do formset LinhasCirurgiaFormSet com os dados do POST
+        else:
+            data['formset'] = LinhasCirurgiaFormSet()  # Cria uma instância vazia do formset LinhasCirurgiaFormSet
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()  # Obtém o contexto
+        formset = context['formset']  # Obtém o formset do contexto
+        if formset.is_valid():  # Verifica se o formset é válido
+            print("Formset is valid")
+            self.object = form.save()  # Salva o formulário principal
+            formset.instance = self.object  # Associa o objeto do formset ao objeto principal
+            formset.save()  # Salva o formset
+            self.object.update_costs()  # Atualiza os custos após salvar as linhas
+            return redirect(self.success_url)  # Redireciona para a URL de sucesso
+        else:
+            print("Formset is invalid")
+            return self.form_invalid(form)  # Retorna o formulário inválido
+
+
+# Classe para atualizar uma Cirurgia existente
+class CirurgiaUpdateView(UpdateView):
+    model = Cirurgia
+    form_class = CirurgiaForm
+    template_name = 'app/cirurgia/cirurgia_form.html'
+    success_url = reverse_lazy('lista_cirurgia')
+
+    def get_context_data(self, **kwargs):
+        # Obtém os dados do contexto
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            # Se houver uma requisição POST, cria uma instância do formset com os dados da requisição e a instância da cirurgia
+            data['formset'] = LinhasCirurgiaFormSet(self.request.POST, instance=self.object)
+        else:
+            # Caso contrário, cria uma instância do formset com a instância da cirurgia
+            data['formset'] = LinhasCirurgiaFormSet(instance=self.object)
+        return data
+
+    def form_valid(self, form):
+        # Obtém o contexto
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            # Se o formset for válido, salva a instância do form e do formset
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            self.object.update_costs()  # Atualiza os custos após salvar as linhas
+            return redirect(self.success_url)
+        else:
+            print("Formset is invalid")
+            return self.form_invalid(form)
+        
+# Função para obter os detalhes de um Produto
+def get_produto_details(pk):
+    produto = Produto.objects.get(pk=pk)
+    data = {
+        'descricao': produto.descricao,
+        'unidade': produto.unidade,
+        'custo_unitario': produto.preco,
+    }
+    return JsonResponse(data)

@@ -1,0 +1,46 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<div class="pagetitle">
+  <h1>Lista</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Configuraçōes</a></li>
+      <li class="breadcrumb-item">Porte Cirurgico</li>
+    </ol>
+  </nav>
+</div>
+
+<section class="section">
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="card">
+        <div class="card-body">
+            <h1>Detalhes:</h1>
+            <hr>
+
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title">Detalhes:</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ porte.descricao }}</h6>
+                <p class = 'card-text'></p>
+                    <strong>Sigla:</strong>{{ porte.descricao }} <br>
+
+                    <div class = 'text-end'>
+                        <a href="{% url 'editar_porte' porte.id %}" class="btn btn-primary">Editar</a>
+                        <a href="{% url 'eliminar_porte' porte.id %}" class="btn btn-danger">Eliminar</a>
+                        <a href="{% url 'lista_porte' %}" class="btn btn-white">Voltar</a>
+                    </div>
+                </div>
+            </div><!-- End Card with titles, buttons, and links --> 
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,44 +1,129 @@
 {% extends "app/layout.html" %}
-
 {% block content %}
-  <h2>Criar Cirurgia</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <h3>Linhas de Cirurgia</h3>
-    {{ formset.management_form }}
-    <table>
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Descrição</th>
-          <th>Unidade</th>
-          <th>Custo Unitário</th>
-          <th>Quantidade</th>
-          <th>Total</th>
-          <th>Remover</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for form in formset %}
-          <tr>
-            <td>{{ form.codigo }}</td>
-            <td>{{ form.descricao }}</td>
-            <td>{{ form.unidade }}</td>
-            <td>{{ form.custoUnitario }}</td>
-            <td>{{ form.quantidade }}</td>
-            <td>{{ form.total }}</td>
-            <td>
-              {% if form.instance.pk %}
-                <input type="checkbox" name="{{ form.prefix }}-DELETE">
-              {% else %}
-                <input type="hidden" name="{{ form.prefix }}-DELETE">
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <button type="submit">Salvar</button>
-  </form>
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+            <h2>{% if object.pk %}Editar Cirurgia{% else %}Criar Cirurgia{% endif %}</h2>
+            <!-- Campos para os dados da cirurgia -->
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    {{ form.portecirurgico.label_tag }}
+                    {{ form.portecirurgico }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.procedimento.label_tag }}
+                    {{ form.procedimento }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.paciente.label_tag }}
+                    {{ form.paciente }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.especialidade.label_tag }}
+                    {{ form.especialidade }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.tempoCirurgia.label_tag }}
+                    {{ form.tempoCirurgia }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.tempoInternacao.label_tag }}
+                    {{ form.tempoInternacao }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.localInternacao.label_tag }}
+                    {{ form.localInternacao }}
+                </div>
+            </div>
+
+            <!-- Linhas de Cirurgia -->
+            <h3>Linhas de Cirurgia</h3>
+            <table class="table table-bordered" id="detalhes">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Descrição</th>
+                        <th>Unidade</th>
+                        <th>Custo Unitário</th>
+                        <th>Quantidade</th>
+                        <th>Total</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="formset-container">
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                    <tr class="formset-row">
+                        <td>{{ form.codigo }}</td>
+                        <td>{{ form.descricao }}</td>
+                        <td>{{ form.unidade }}</td>
+                        <td>{{ form.custoUnitario }}</td>
+                        <td>{{ form.quantidade }}</td>
+                        <td>{{ form.total }}</td>
+                        <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="form-row mt-4">
+                <div class="form-group col-md-3">
+                    {{ form.custoFixo.label_tag }}
+                    {{ form.custoFixo }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ form.custoVariavel.label_tag }}
+                    {{ form.custoVariavel }}
+                </div>
+                <div class="form-group col-md-3">
+                    {{ form.custoTotal.label_tag }}
+                    {{ form.custoTotal }}
+                </div>
+            </div>
+            
+            <button type="button" class="btn btn-primary" onclick="adicionarLinha()">Adicionar Linha</button>
+            <button type="submit" class="btn btn-success">Salvar</button>
+            <a href="{% url 'lista_cirurgia' %}" class="btn btn-secondary">Voltar</a>
+        </div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        function adicionarLinha() {
+            var tabela = document.getElementById("formset-container");
+            var novaLinha = document.createElement('tr');
+            novaLinha.classList.add('formset-row');
+            novaLinha.innerHTML = `
+                <td>{{ formset.empty_form.codigo }}</td>
+                <td>{{ formset.empty_form.descricao }}</td>
+                <td>{{ formset.empty_form.unidade }}</td>
+                <td>{{ formset.empty_form.custoUnitario }}</td>
+                <td>{{ formset.empty_form.quantidade }}</td>
+                <td>{{ formset.empty_form.total }}</td>
+                <td><button type="button" class="btn btn-danger" onclick="removerLinha(this)">Remover</button></td>
+            `;
+            tabela.appendChild(novaLinha);
+        }
+
+        function removerLinha(botao) {
+            var linha = botao.parentNode.parentNode;
+            linha.remove();
+        }
+
+        $(document).ready(function() {
+            $('#id_linhascirurgia_set-TOTAL_FORMS').val('{{ formset.total_form_count }}');
+
+            $('#id_linhascirurgia_set-0-codigo').change(function() {
+                var codigoProduto = $(this).val();
+                $.ajax({
+                    url: '/get_produto_details/' + codigoProduto + '/',
+                    success: function(data) {
+                        $('#id_linhascirurgia_set-0-descricao').val(data.descricao);
+                        $('#id_linhascirurgia_set-0-unidade').val(data.unidade);
+                        $('#id_linhascirurgia_set-0-custoUnitario').val(data.custo_unitario);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

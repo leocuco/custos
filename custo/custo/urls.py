@@ -7,6 +7,8 @@ from django.urls import path
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from app import forms, views
+from django.views.generic.edit import CreateView, UpdateView
+
 
 
 urlpatterns = [
@@ -63,13 +65,33 @@ urlpatterns = [
     path('familia/<int:id>/', views.familia, name='familia'),
     path('familia/editar/<int:id>/', views.editar_familia, name='editar_familia'),
     path('familia/remover/<int:id>/', views.eliminar_familia, name='eliminar_familia'),
+
     #Cirurgia
     path('cirurgia/', views.lista_cirurgia, name='lista_cirurgia'),
-    path('cirurgia/novo', views.criar_cirurgia, name='criar_cirurgia'),
-    path('cirurgia/<int:id>/', views.cirurgia, name='cirurgia'),
-    path('cirurgia/editar/<int:id>/', views.editar_cirurgia, name='editar_cirurgia'),
-    path('cirurgia/remover/<int:id>/', views.eliminar_cirurgia, name='eliminar_cirurgia'),
+    # path('cirurgia/novo', views.criar_cirurgia, name='criar_cirurgia'),
+    # path('cirurgia/<int:id>/', views.cirurgia, name='cirurgia'),
+    # path('cirurgia/editar/<int:id>/', views.editar_cirurgia, name='editar_cirurgia'),
+    # path('cirurgia/remover/<int:id>/', views.eliminar_cirurgia, name='eliminar_cirurgia'),
+    # path('cirurgia/add/', views.CirurgiaCreateView, name='add_cirurgia'),
+    # path('cirurgia/<int:pk>/edit/', views.CirurgiaUpdateView, name='edit_cirurgia'),
+    path('cirurgia/add/', views.CirurgiaCreateView.as_view(), name='add_cirurgia'),
+    path('cirurgia/<int:pk>/edit/', views.CirurgiaUpdateView.as_view(), name='edit_cirurgia'),
+    path('get_produto_details/<int:pk>/',views.get_produto_details, name='get_produto_details'),
+
     #Dashboard
     path('dashboard/', views.dashboard_view, name='dashboard'),
+    #Porte Cirurgico
+    path('porte/', views.lista_porte, name='lista_porte'),
+    path('porte/novo', views.criar_porte, name='criar_porte'),
+    path('porte/<int:id>/', views.porte, name='porte'),
+    path('porte/editar/<int:id>/', views.editar_porte, name='editar_porte'),
+    path('porte/remover/<int:id>/', views.eliminar_porte, name='eliminar_porte'),
+    #Porte Cirurgico Cirurgia
+    path('portecirurgia/', views.lista_portecirurgia, name='lista_portecirurgia'),
+    path('portecirurgia/novo', views.criar_portecirurgia, name='criar_portecirurgia'),
+    path('portecirurgia/<int:id>/', views.portecirurgia, name='portecirurgia'),
+    path('portecirurgia/editar/<int:id>/', views.editar_portecirurgia, name='editar_portecirurgia'),
+    path('portecirurgia/remover/<int:id>/', views.eliminar_portecirurgia, name='eliminar_portecirurgia'),
+    #Procedimento Cirurgia
 
 ]

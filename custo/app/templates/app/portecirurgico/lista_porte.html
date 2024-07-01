@@ -9,10 +9,10 @@
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.html">Configuraçōes</a></li>
-        <li class="breadcrumb-item">Lista de Cirurgia</li>
+        <li class="breadcrumb-item">Lista de Porte Cirurgico</li>
         
       </ol>
-      <a href="{% url "add_cirurgia" %}">
+      <a href="{% url "criar_porte" %}">
         <button type="button"  class="btn btn-outline-success" onclick="index.html">Novo</button>
       </a>
     </nav>
@@ -27,20 +27,17 @@
             <table class="table datatable table-hover">
               <thead class="table-dark">
                 <tr>
-                  <th scope="col">Cirurgia</th>
+                  <th scope="col">Porte Cirurgico</th>
+                  <th scope="col">Tempo Minutos</th>
 
                 </tr>
               </thead>
-              {% for cirurgia in lista_cirurgia%}
+              {% for porte in lista_porte%}
               <tr>
-                <td>{{ cirurgia.procedimento }}</td>
-                <td>
-                  <a href="{% url 'edit_cirurgia' cirurgia.id %}">
-                    <button type="button" class="btn btn-outline-primary">Editar</button>
-                  </a>
-                </td>
-
-                
+                {% comment %} <td><a href="{% url 'procedimento'  procedimento.id %}">{{ produto.codigo }}</a></td>
+                <td><a href="{% url 'procedimento'  procedimento.id %}">{{ produto.preco|floatformat:2 }}</a></td> {% endcomment %}
+                <td><a href="{% url 'porte'  porte.id %}">{{ porte.descricao }}</a></td>
+                <td><a href="{% url 'porte'  porte.id %}">{{ porte.tempo_minutos|floatformat:2 }}</a></td>
               </tr>
               {% endfor %}
 

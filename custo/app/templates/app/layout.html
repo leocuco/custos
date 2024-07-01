@@ -25,13 +25,17 @@
                     <a href="/" class="navbar-brand">Custos de saude</a>
                 </div>
                 <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav ">
-
+                    <ul class="nav navbar-nav">
                         <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="{% url 'lista_de_produto' %}">item</a></li>
                         <li><a href="{% url 'about' %}">About</a></li>
                         <li><a href="{% url 'contact' %}">Contact</a></li>
+
+                        <li><a href="admin/app/cirurgia/add/">Add Cirurgia</a></li>
+
                     </ul>
+
+
                     {% include 'app/loginpartial.html' %}
                 </div>
             </div>
