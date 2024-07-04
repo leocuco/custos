@@ -27,14 +27,20 @@
             <table class="table datatable table-hover">
               <thead class="table-dark">
                 <tr>
-                  <th scope="col">Cirurgia</th>
+                  <th scope="col">Data</th>
+                  <th scope="col">Porte</th>
+                  <th scope="col">Procedimento</th>
 
                 </tr>
               </thead>
               {% for cirurgia in lista_cirurgia%}
               <tr>
+                <td>{{ cirurgia.data|date:"d-m-Y" }}</td>
+                <td>{{ cirurgia.portecirurgico }}</td>
                 <td>{{ cirurgia.procedimento }}</td>
+
                 <td>
+
                   <a href="{% url 'edit_cirurgia' cirurgia.id %}">
                     <button type="button" class="btn btn-outline-primary">Editar</button>
                   </a>

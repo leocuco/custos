@@ -1,33 +1,54 @@
 {% extends "app/layout.html" %}
 
 {% block content %}
-
+{% load static %}
 <div class="jumbotron">
-    <h1>Custo Hospitalar</h1>
-    <!-- <p class="lead">Django is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://www.djangoproject.com/" class="btn btn-primary btn-large">Learn more &raquo;</a></p> -->
+
+    <h1>Bem-vindo ao sistema de Gestão de Custos Cirúrgicos</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <a href="#" class="btn btn-primary btn-lg btn-block">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Função 1
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#" class="btn btn-primary btn-lg btn-block">
+                    <i class="bi bi-clipboard-data"></i>
+                    Função 2
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#" class="btn btn-primary btn-lg btn-block">
+                    <i class="bi bi-graph-up"></i>
+                    Função 3
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#" class="btn btn-primary btn-lg btn-block">
+                    <i class="bi bi-gear"></i>
+                    Função 4
+                </a>
+            </div>
+        </div>
+    </div></div></a>
+    <!-- <img src="{% static 'img/cirurgia.jpg' %}" alt="Your Image" style="opacity: 0.5;"> -->
 </div>
 
-<!-- <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            Django gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://djangobook.com/django-tutorials/">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>The Python Package Index is a repository of software for the Python programming language.</p>
-        <p><a class="btn btn-default" href="https://pypi.org/">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Microsoft Azure</h2>
-        <p>You can easily publish to Microsoft Azure using Visual Studio. Find out how you can host your application using a free trial today.</p>
-        <p><a class="btn btn-default" href="http://azure.microsoft.com">Learn more &raquo;</a></p>
-    </div>
-</div> -->
+
+
+<!-- <div class="jumbotron">
+    <h1 class="display-4">Welcome to Our Website!</h1>
+    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    <hr class="my-4">
+    <img src="{% static 'img/cirurgia.jpg' %}" class="img-fluid my-4" alt="Responsive image">
+    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+  </div> -->
+
+ <!-- Add this line to load static files -->
+
+<!-- Rest of your code -->
 
 {% endblock %}
