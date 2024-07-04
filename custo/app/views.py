@@ -24,7 +24,7 @@ def home(request):
         request,
         'app/index.html',
         {
-            'title':'Home Page',
+            'title':'Pagina Inicial',
             'year':datetime.now().year,
         }
     )
@@ -36,7 +36,7 @@ def contact(request):
         request,
         'app/contact.html',
         {
-            'title':'Contact',
+            'title':'Contacto',
             'message':'Your contact page.',
             'year':datetime.now().year,
         }
@@ -49,7 +49,7 @@ def about(request):
         request,
         'app/about.html',
         {
-            'title':'About',
+            'title':'Sobre Nós',
             'message':'Your application description page.',
             'year':datetime.now().year,
         }
