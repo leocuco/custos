@@ -220,6 +220,10 @@ LinhasCirurgiaFormSet = inlineformset_factory(Cirurgia, LinhasCirurgia, form=Lin
 #     can_delete=True
 # )
 
+# forms.py
+
+# forms.py
+
 
 class DashboardFilterForm(forms.Form):
     ano = forms.ChoiceField(
@@ -237,3 +241,12 @@ class DashboardFilterForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={'class': 'form-control col-md-12'})
     )
+
+    def __init__(self, *args, **kwargs):
+        super(DashboardFilterForm, self).__init__(*args, **kwargs)
+        self.fields['ano'].initial = kwargs.get('ano', None)
+        self.fields['mes'].initial = kwargs.get('mes', None)
+        self.fields['cirurgia'].initial = kwargs.get('cirurgia', None)
+
+
+

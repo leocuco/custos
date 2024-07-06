@@ -102,11 +102,12 @@ class PorteCirurgico(models.Model):
 class PorteCirurgicoCirurgia(models.Model):
     descricao = models.ForeignKey(PorteCirurgico, on_delete=models.CASCADE)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    quantidade = models.IntegerField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+    quantidade = models.IntegerField(default=1)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def save(self, *args, **kwargs):
-        self.total = self.quantidade * self.produto.preco  # Calculate total based on quantity and unit cost
+        if self.produto:
+            self.total = self.produto.preco * self.quantidade  # Calculate total based on quantity and unit cost
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -148,12 +149,14 @@ class Cirurgia(models.Model):
         if self.portecirurgico:
             porte_cirurgico_cirurgias = PorteCirurgicoCirurgia.objects.filter(descricao=self.portecirurgico)
             for pcc in porte_cirurgico_cirurgias:
-                LinhasCirurgia.objects.create(
+                LinhasCirurgia.objects.get_or_create(
                     cirurgia=self,
                     codigo=pcc.produto,
-                    quantidade=pcc.quantidade,
-                    custoUnitario=pcc.produto.preco,
-                    total=pcc.quantidade * pcc.produto.preco
+                    defaults={
+                        'quantidade': pcc.quantidade,
+                        'custoUnitario': pcc.produto.preco,
+                        'total': pcc.quantidade * pcc.produto.preco
+                    }
                 )
 
     def calculate_costs(self):

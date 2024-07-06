@@ -16,6 +16,7 @@ from django.db import connection
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 from .forms import CirurgiaForm, LinhasCirurgiaFormSet
+import plotly.graph_objects as go
 
 def home(request):
     """Renders the home page."""
@@ -387,6 +388,76 @@ def lista_cirurgia(request):
 
 #Dashboard
 
+# def dashboard_view(request):
+#     form = DashboardFilterForm(request.GET or None)
+
+#     # Filtrando os dados
+#     cirurgias = Cirurgia.objects.all()
+#     if form.is_valid():
+#         ano = form.cleaned_data.get('ano')
+#         mes = form.cleaned_data.get('mes')
+#         cirurgia_id = form.cleaned_data.get('cirurgia')
+
+#         if ano:
+#             cirurgias = cirurgias.filter(data__year=ano)
+#         if mes:
+#             cirurgias = cirurgias.filter(data__month=mes)
+#         if cirurgia_id:
+#             cirurgias = cirurgias.filter(id=cirurgia_id.id)
+
+#     # Processando os dados
+#     df = pd.DataFrame(list(cirurgias.values()))
+
+#     if not df.empty:
+#         # Paleta de cores vibrante
+#         colors = px.colors.qualitative.Plotly
+
+
+#         # Gráfico de barras
+#         fig_bar = px.bar(
+#             df, 
+#             x='data', 
+#             y='custoTotal', 
+#             color='procedimento_id', 
+#             title='Custos Totais por Cirurgia', 
+#             color_discrete_sequence=colors, 
+#             barmode='group'
+#         )
+#         fig_bar.update_layout(barmode='group')
+#         graph_bar = fig_bar.to_html(full_html=False)
+
+
+#         # Tabela
+#         table_html = df.to_html(classes='table table-striped', index=False)
+
+#         # Gráfico de pizza
+#         fig_pie = px.pie(
+#             df, 
+#             names='procedimento_id', 
+#             values='custoTotal', 
+#             title='Distribuição dos Custos por Procedimento', 
+#             color_discrete_sequence=colors
+#         )
+#         graph_pie = fig_pie.to_html(full_html=False)
+#     else:
+#         graph_bar = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+#         table_html = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+#         graph_pie = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+
+#     return render(request, 'dashboard.html', {
+#         'graph_bar': graph_bar,
+#         'table_html': table_html,
+#         'graph_pie': graph_pie,
+#         'form': form
+#     })
+#Dashboard
+
+import plotly.express as px
+import pandas as pd
+from django.shortcuts import render
+from .models import Cirurgia, LinhasCirurgia
+from .forms import DashboardFilterForm
+
 def dashboard_view(request):
     form = DashboardFilterForm(request.GET or None)
 
@@ -405,49 +476,142 @@ def dashboard_view(request):
             cirurgias = cirurgias.filter(id=cirurgia_id.id)
 
     # Processando os dados
-    df = pd.DataFrame(list(cirurgias.values()))
+    df_cirurgias = pd.DataFrame(list(cirurgias.values(
+        'id', 'paciente__nome', 'data', 'custoFixo', 'custoVariavel', 'custoTotal', 'portecirurgico__descricao', 'procedimento__descricao'
+    )))
 
-    if not df.empty:
+    # Obtendo linhas de cirurgia para dados adicionais
+    linhas_cirurgias = LinhasCirurgia.objects.filter(cirurgia__in=cirurgias).select_related('codigo__familia')
+    df_linhas = pd.DataFrame(list(linhas_cirurgias.values(
+        'cirurgia__id', 'codigo__familia__descricao', 'total'
+    )))
+
+    if not df_cirurgias.empty:
         # Paleta de cores vibrante
         colors = px.colors.qualitative.Plotly
 
-        # Gráfico de barras
-        fig_bar = px.bar(
-            df, 
-            x='data', 
-            y='custoTotal', 
-            color='procedimento_id', 
-            title='Custos Totais por Cirurgia', 
-            color_discrete_sequence=colors, 
+        # Gráfico de barras para custo total por paciente e procedimento
+        df_costs_by_patient_procedure = df_cirurgias.groupby(['paciente__nome', 'procedimento__descricao'])['custoTotal'].sum().reset_index()
+        fig_bar_patient_procedure = px.bar(
+            df_costs_by_patient_procedure,
+            x='paciente__nome',
+            y='custoTotal',
+            color='procedimento__descricao',
+            text='custoTotal',
+            title='Custos Totais por Paciente e Procedimento',
+            color_discrete_sequence=colors,
+            labels={'paciente__nome': 'Paciente', 'custoTotal': 'Custo Total', 'procedimento__descricao': 'Procedimento'},
             barmode='group'
         )
-        fig_bar.update_layout(barmode='group')
-        graph_bar = fig_bar.to_html(full_html=False)
+        fig_bar_patient_procedure.update_layout(
+            xaxis_title='Paciente',
+            yaxis_title='Custo Total',
+            xaxis=dict(tickmode='linear'),
+            showlegend=True
+        )
+        fig_bar_patient_procedure.update_traces(texttemplate='%{text}', textposition='outside')
+        graph_bar_patient_procedure = fig_bar_patient_procedure.to_html(full_html=False)
 
-        # Tabela
-        table_html = df.to_html(classes='table table-striped', index=False)
+        # Gráfico de barras empilhadas para Custos Fixos e Variáveis
+        df_stacked = df_cirurgias.groupby('id')[['custoFixo', 'custoVariavel']].sum().reset_index()
+        df_stacked = df_stacked.melt(id_vars=['id'], value_vars=['custoFixo', 'custoVariavel'],
+                                     var_name='Tipo de Custo', value_name='Valor')
+        fig_bar_stacked = px.bar(
+            df_stacked,
+            x='id',
+            y='Valor',
+            color='Tipo de Custo',
+            text='Valor',
+            title='Custos Fixos e Variáveis por Cirurgia',
+            color_discrete_sequence=colors,
+            labels={'id': 'ID da Cirurgia', 'Valor': 'Valor'},
+            barmode='stack'
+        )
+        fig_bar_stacked.update_layout(
+            xaxis_title='ID da Cirurgia',
+            yaxis_title='Valor',
+            xaxis=dict(tickmode='linear'),
+            showlegend=True
+        )
+        fig_bar_stacked.update_traces(texttemplate='%{text}', textposition='outside')
+        graph_bar_stacked = fig_bar_stacked.to_html(full_html=False)
 
-        # Gráfico de pizza
+        # Gráfico de pizza para custo por procedimento
         fig_pie = px.pie(
-            df, 
-            names='procedimento_id', 
-            values='custoTotal', 
-            title='Distribuição dos Custos por Procedimento', 
+            df_cirurgias,
+            names='procedimento__descricao',
+            values='custoTotal',
+            title='Distribuição dos Custos por Procedimento',
             color_discrete_sequence=colors
         )
         graph_pie = fig_pie.to_html(full_html=False)
+
+        # Gráfico de pizza para custo por porte cirúrgico
+        fig_pie_porte = px.pie(
+            df_cirurgias,
+            names='portecirurgico__descricao',
+            values='custoTotal',
+            title='Distribuição dos Custos por Porte Cirúrgico',
+            color_discrete_sequence=colors
+        )
+        graph_pie_porte = fig_pie_porte.to_html(full_html=False)
+
+        # Gráfico de pizza para custo por família
+        df_familias = df_linhas.groupby('codigo__familia__descricao').agg({'total': 'sum'}).reset_index()
+        fig_pie_familia = px.pie(
+            df_familias,
+            names='codigo__familia__descricao',
+            values='total',
+            title='Distribuição dos Custos por Família',
+            color_discrete_sequence=colors
+        )
+        graph_pie_familia = fig_pie_familia.to_html(full_html=False)
+
+        # Gráfico de pizza para número de cirurgias por porte cirúrgico
+        df_cirurgias_porte = df_cirurgias.groupby('portecirurgico__descricao').size().reset_index(name='count')
+        fig_pie_cirurgias_porte = px.pie(
+            df_cirurgias_porte,
+            names='portecirurgico__descricao',
+            values='count',
+            title='Número de Cirurgias por Porte Cirúrgico',
+            color_discrete_sequence=colors
+        )
+        graph_pie_cirurgias_porte = fig_pie_cirurgias_porte.to_html(full_html=False)
+
+        # Gráfico de linha para custos ao longo do tempo
+        df_line = df_cirurgias.groupby(['data'])[['custoFixo', 'custoVariavel']].sum().reset_index()
+        fig_line = px.line(
+            df_line,
+            x='data',
+            y=['custoFixo', 'custoVariavel'],
+            title='Custos ao Longo do Tempo',
+            labels={'data': 'Data', 'value': 'Valor', 'variable': 'Tipo de Custo'}
+        )
+        graph_line = fig_line.to_html(full_html=False)
+
+        # Tabela com detalhes das cirurgias
+        table_html = df_cirurgias.to_html(classes='table table-striped', index=False)
     else:
-        graph_bar = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
-        table_html = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+        graph_bar_patient_procedure = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+        graph_bar_stacked = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
         graph_pie = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+        graph_pie_porte = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+        graph_pie_familia = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+        graph_pie_cirurgias_porte = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+        graph_line = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
+        table_html = "<p>Nenhum dado disponível para os filtros selecionados.</p>"
 
     return render(request, 'dashboard.html', {
-        'graph_bar': graph_bar,
-        'table_html': table_html,
+        'form': form,
+        'graph_bar_patient_procedure': graph_bar_patient_procedure,
+        'graph_bar_stacked': graph_bar_stacked,
         'graph_pie': graph_pie,
-        'form': form
+        'graph_pie_porte': graph_pie_porte,
+        'graph_pie_familia': graph_pie_familia,
+        'graph_pie_cirurgias_porte': graph_pie_cirurgias_porte,
+        'graph_line': graph_line,
+        'table_html': table_html,
     })
-
 
 
 #Cirurgia
@@ -464,12 +628,15 @@ class CirurgiaCreateView(CreateView):
         if self.request.POST:
             data['formset'] = LinhasCirurgiaFormSet(self.request.POST)  # Cria uma instância do formset LinhasCirurgiaFormSet com os dados do POST
         else:
-            data['formset'] = LinhasCirurgiaFormSet()  # Cria uma instância vazia do formset LinhasCirurgiaFormSet
-        return data
-
-    def form_valid(self, form):
+            data['formset'] = LinhasCirurgiaFormSet()  # Cria uma instância    def form_valid(self, form):
         context = self.get_context_data()  # Obtém o contexto
         formset = context['formset']  # Obtém o formset do contexto
+        if formset.is_valid():
+            # Add your code here if the formset is valid
+            pass
+        else:
+            # Add your code here if the formset is not valid
+            passexto
         if formset.is_valid():  # Verifica se o formset é válido
             print("Formset is valid")
             self.object = form.save()  # Salva o formulário principal
