@@ -3,10 +3,20 @@
 
 {% block title %}Dashboard de Custos Cirúrgicos{% endblock %}
 
+{% block styles %}
+
+{% endblock %}
 
 {% block scripts %} 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}
+{% block link %}
+
+{% endblock %}
+
 {%block content%}
     <!-- <div class="container">
         <h1>Dashboard de Cirurgias</h1>
@@ -41,7 +51,6 @@
 
     <!-- dashboard.html -->
     <div class="container mt-5">
-        !-- Filtros -->
         <div class="mb-4">
             <form method="GET">
                 <div class="form-row">
@@ -59,52 +68,75 @@
             </form>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <h3>Custos Totais por Paciente e Procedimento</h3>
-                {{ graph_bar_patient_procedure|safe }}
+    
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card text-white bg-primary mb-3">
+                        
+                        <div class="card-header">Custo Fixo Total</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ total_custo_fixo }}</h5>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card text-white bg-secondary mb-3">
+                        <div class="card-header">Custo Variável Total</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ total_custo_variavel }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h3>Custos Totais por Paciente e Procedimento</h3>
+                    {{ graph_bar_patient_procedure|safe }}
+                </div>
+            </div>
+    
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h3>Custos Fixos e Variáveis por Cirurgia</h3>
+                    {{ graph_bar_stacked|safe }}
+                </div>
+                <div class="col-md-6">
+                    <h3>Distribuição dos Custos por Procedimento</h3>
+                    {{ graph_pie|safe }}
+                </div>
+            </div>
+    
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h3>Distribuição dos Custos por Porte Cirúrgico</h3>
+                    {{ graph_pie_porte|safe }}
+                </div>
+                <div class="col-md-6">
+                    <h3>Distribuição dos Custos por Família</h3>
+                    {{ graph_pie_familia|safe }}
+                </div>
+            </div>
+    
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h3>Número de Cirurgias por Porte Cirúrgico</h3>
+                    {{ graph_pie_cirurgias_porte|safe }}
+                </div>
+                <div class="col-md-6">
+                    <h3>Custos ao Longo do Tempo</h3>
+                    {{ graph_line|safe }}
+                </div>
+            </div>
+    
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h3>Detalhes das Cirurgias</h3>
+                    {{ table_html|safe }}
+                </div>
             </div>
         </div>
-
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h3>Custos Fixos e Variáveis por Cirurgia</h3>
-                {{ graph_bar_stacked|safe }}
-            </div>
-            <div class="col-md-6">
-                <h3>Distribuição dos Custos por Procedimento</h3>
-                {{ graph_pie|safe }}
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h3>Distribuição dos Custos por Porte Cirúrgico</h3>
-                {{ graph_pie_porte|safe }}
-            </div>
-            <div class="col-md-6">
-                <h3>Distribuição dos Custos por Família</h3>
-                {{ graph_pie_familia|safe }}
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h3>Número de Cirurgias por Porte Cirúrgico</h3>
-                {{ graph_pie_cirurgias_porte|safe }}
-            </div>
-            <div class="col-md-6">
-                <h3>Custos ao Longo do Tempo</h3>
-                {{ graph_line|safe }}
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <h3>Detalhes das Cirurgias</h3>
-                {{ table_html|safe }}
-            </div>
-        </div>
-    </div>
+        
 
 {%endblock%}

@@ -4,91 +4,68 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{{ title }} - Custos</title>
-        {% load static %}
+        <!-- {% load static %}
         <link rel="stylesheet" type="text/css"
             href="{% static 'app/content/bootstrap.min.css' %}" />
         <link rel="stylesheet" type="text/css"
-            href="{% static 'app/content/site.css' %}" />
+            href="{% static 'app/content/site.css' %}" /> -->
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
         <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
             <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle"
-                        data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a href="/" class="navbar-brand">Custos de saude</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-nav-scroll">
-                        <!-- <li><a href="{% url 'home' %}">Home</a></li> -->
-                        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle"
-                                data-toggle="dropdown" role="button"
-                                aria-haspopup="true"
-                                aria-expanded="false">cirurgia <span
-                                    class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a
-                                        href="{% url 'lista_cirurgia' %}">Cirurgias</a></li>
-                                <li><a href="admin/app/cirurgia/">Admin
-                                        Cirurgia</a></li>
-
-                            </ul>
+                <a class="navbar-brand" href="/">Custos de Saúde</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                         </li>
-
-                        <!-- Dropdown Menu -->
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle"
-                                data-toggle="dropdown" role="button"
-                                aria-haspopup="true"
-                                aria-expanded="false">Tabelas <span
-                                    class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a
-                                        href="{% url 'lista_paciente' %}">Pacientes</a></li>
-                                <li><a
-                                        href="{% url 'lista_de_produto' %}">Custos</a></li>
-                                <li><a
-                                        href="{% url 'lista_portecirurgia' %}">Detalhes
-                                        do Porte cirurgico</a></li>
-                            </ul>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="cirurgiaDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Cirurgia
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="cirurgiaDropdown">
+                                <a class="dropdown-item" href="{% url 'lista_cirurgia' %}">Cirurgias</a>
+                                <a class="dropdown-item" href="admin/app/cirurgia/">Admin Cirurgia</a>
+                            </div>
                         </li>
-
-                        <!-- Dropdown Menu -->
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle"
-                                data-toggle="dropdown" role="button"
-                                aria-haspopup="true"
-                                aria-expanded="false">Configurações <span
-                                    class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a
-                                        href="{% url 'lista_unidade' %}">Unidades</a></li>
-                                <li><a
-                                        href="{% url 'lista_familia' %}">Categotia
-                                        de Items</a></li>
-                                <li class="divider"></li>
-                                <li><a
-                                        href="{% url 'lista_especialidade' %}">Especialidades</a></li>
-                                <li><a
-                                        href="{% url 'lista_procedimento' %}">Tipos
-                                        de Procedimentos</a></li>
-                                <li><a href="{% url 'lista_porte' %}">Portes
-                                        cirurgicos</a></li>
-                            </ul>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="tabelasDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Tabelas
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="tabelasDropdown">
+                                <a class="dropdown-item" href="{% url 'lista_paciente' %}">Pacientes</a>
+                                <a class="dropdown-item" href="{% url 'lista_de_produto' %}">Custos</a>
+                                <a class="dropdown-item" href="{% url 'lista_portecirurgia' %}">Detalhes do Porte Cirúrgico</a>
+                            </div>
                         </li>
-                        <li><a href="{% url 'about' %}">About</a></li>
-                        <li><a href="{% url 'contact' %}">Contact</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="configuracoesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Configurações
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="configuracoesDropdown">
+                                <a class="dropdown-item" href="{% url 'lista_unidade' %}">Unidades</a>
+                                <a class="dropdown-item" href="{% url 'lista_familia' %}">Categoria de Items</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'lista_especialidade' %}">Especialidades</a>
+                                <a class="dropdown-item" href="{% url 'lista_procedimento' %}">Tipos de Procedimentos</a>
+                                <a class="dropdown-item" href="{% url 'lista_porte' %}">Portes Cirúrgicos</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about' %}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        </li>
                     </ul>
-
                     {% include 'app/loginpartial.html' %}
                 </div>
             </div>
@@ -102,9 +79,12 @@
             </footer>
         </div>
 
-        <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
-        <script src="{% static 'app/scripts/bootstrap.js' %}"></script>
-        <script src="{% static 'app/scripts/respond.js' %}"></script>
-        {% block scripts %}{% endblock %}
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+        
+        {% block scripts %}
+        {% endblock %}
     </body>
 </html>

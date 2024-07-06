@@ -452,12 +452,6 @@ def lista_cirurgia(request):
 #     })
 #Dashboard
 
-import plotly.express as px
-import pandas as pd
-from django.shortcuts import render
-from .models import Cirurgia, LinhasCirurgia
-from .forms import DashboardFilterForm
-
 def dashboard_view(request):
     form = DashboardFilterForm(request.GET or None)
 
@@ -479,6 +473,10 @@ def dashboard_view(request):
     df_cirurgias = pd.DataFrame(list(cirurgias.values(
         'id', 'paciente__nome', 'data', 'custoFixo', 'custoVariavel', 'custoTotal', 'portecirurgico__descricao', 'procedimento__descricao'
     )))
+
+    # Calculando os custos fixos e variáveis totais
+    total_custo_fixo = df_cirurgias['custoFixo'].sum() if not df_cirurgias.empty else 0
+    total_custo_variavel = df_cirurgias['custoVariavel'].sum() if not df_cirurgias.empty else 0
 
     # Obtendo linhas de cirurgia para dados adicionais
     linhas_cirurgias = LinhasCirurgia.objects.filter(cirurgia__in=cirurgias).select_related('codigo__familia')
@@ -611,6 +609,8 @@ def dashboard_view(request):
         'graph_pie_cirurgias_porte': graph_pie_cirurgias_porte,
         'graph_line': graph_line,
         'table_html': table_html,
+        'total_custo_fixo': total_custo_fixo,
+        'total_custo_variavel': total_custo_variavel,
     })
 
 
@@ -628,15 +628,12 @@ class CirurgiaCreateView(CreateView):
         if self.request.POST:
             data['formset'] = LinhasCirurgiaFormSet(self.request.POST)  # Cria uma instância do formset LinhasCirurgiaFormSet com os dados do POST
         else:
-            data['formset'] = LinhasCirurgiaFormSet()  # Cria uma instância    def form_valid(self, form):
+            data['formset'] = LinhasCirurgiaFormSet()  # Cria uma instância do formset LinhasCirurgiaFormSet sem dados
+        return data
+
+    def form_valid(self, form):
         context = self.get_context_data()  # Obtém o contexto
         formset = context['formset']  # Obtém o formset do contexto
-        if formset.is_valid():
-            # Add your code here if the formset is valid
-            pass
-        else:
-            # Add your code here if the formset is not valid
-            passexto
         if formset.is_valid():  # Verifica se o formset é válido
             print("Formset is valid")
             self.object = form.save()  # Salva o formulário principal
@@ -647,6 +644,7 @@ class CirurgiaCreateView(CreateView):
         else:
             print("Formset is invalid")
             return self.form_invalid(form)  # Retorna o formulário inválido
+
 
 
 # Classe para atualizar uma Cirurgia existente
