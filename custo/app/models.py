@@ -191,6 +191,7 @@ class LinhasCirurgia(models.Model):
         self.descricao = self.codigo.descricao if self.codigo else None
         self.unidade = self.codigo.unidade if self.codigo else None
         self.custoUnitario = self.codigo.preco if self.codigo else None
+        
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -451,6 +451,34 @@ def lista_cirurgia(request):
 #         'form': form
 #     })
 #Dashboard
+def create_stacked_bar_chart(df_cirurgias, colors):
+    # Derretendo o DataFrame para empilhar os dados
+    df_stacked = df_cirurgias[['id', 'custoFixo', 'custoVariavel']]
+    df_stacked = df_stacked.melt(id_vars=['id'], value_vars=['custoFixo', 'custoVariavel'],
+                                 var_name='Tipo de Custo', value_name='Valor')
+
+    # Criando o gráfico de barras empilhadas
+    fig_bar_stacked = px.bar(
+        df_stacked,
+        x='Tipo de Custo',
+        y='Valor',
+        color='Tipo de Custo',
+        text='Valor',
+        title='Custos Fixos e Variáveis por Cirurgia',
+        color_discrete_sequence=colors,
+        labels={'Tipo de Custo': 'Tipo de Custo', 'Valor': 'Valor'},
+        barmode='stack'
+    )
+
+    fig_bar_stacked.update_layout(
+        xaxis_title='Tipo de Custo',
+        yaxis_title='Valor',
+        showlegend=True
+    )
+
+    fig_bar_stacked.update_traces(texttemplate='%{text}', textposition='outside')
+
+    return fig_bar_stacked.to_html(full_html=False)
 
 def dashboard_view(request):
     form = DashboardFilterForm(request.GET or None)
@@ -511,28 +539,7 @@ def dashboard_view(request):
         graph_bar_patient_procedure = fig_bar_patient_procedure.to_html(full_html=False)
 
         # Gráfico de barras empilhadas para Custos Fixos e Variáveis
-        df_stacked = df_cirurgias.groupby('id')[['custoFixo', 'custoVariavel']].sum().reset_index()
-        df_stacked = df_stacked.melt(id_vars=['id'], value_vars=['custoFixo', 'custoVariavel'],
-                                     var_name='Tipo de Custo', value_name='Valor')
-        fig_bar_stacked = px.bar(
-            df_stacked,
-            x='id',
-            y='Valor',
-            color='Tipo de Custo',
-            text='Valor',
-            title='Custos Fixos e Variáveis por Cirurgia',
-            color_discrete_sequence=colors,
-            labels={'id': 'ID da Cirurgia', 'Valor': 'Valor'},
-            barmode='stack'
-        )
-        fig_bar_stacked.update_layout(
-            xaxis_title='ID da Cirurgia',
-            yaxis_title='Valor',
-            xaxis=dict(tickmode='linear'),
-            showlegend=True
-        )
-        fig_bar_stacked.update_traces(texttemplate='%{text}', textposition='outside')
-        graph_bar_stacked = fig_bar_stacked.to_html(full_html=False)
+        graph_bar_stacked = create_stacked_bar_chart(df_cirurgias, colors)
 
         # Gráfico de pizza para custo por procedimento
         fig_pie = px.pie(

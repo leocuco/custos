@@ -149,11 +149,53 @@ class CirurgiaForm(forms.ModelForm):
     class Meta:
         model = Cirurgia
         fields = ['portecirurgico', 'procedimento', 'paciente', 'especialidade', 'tempoCirurgia', 'tempoInternacao', 'localInternacao', 'custoFixo', 'custoVariavel', 'custoTotal']
+        labels = {
+            'portecirurgico':'Porte Cirurgico',
+            'procedimento': 'Procedimento',
+            'paciente': 'Paciente',
+            'especialidade': 'Especialidade',
+            'tempoCirurgia': 'Tempo de Cirurgia',
+            'tempoInternacao': 'Tempo de Internação',
+            'localInternacao': 'Local de Internação',
+            'custoFixo': 'Custo Fixo',
+            'custoVariavel': 'Custo Variável',
+            'custoTotal': 'Custo Total'
+        }
+        widgets = {
+            'portecirurgico': forms.Select(attrs={'class': 'form-control'}),
+            'procedimento': forms.Select(attrs={'class': 'form-control'}),
+            'paciente': forms.Select(attrs={'class': 'form-control'}),
+            'especialidade': forms.Select(attrs={'class': 'form-control'}),
+            'tempoCirurgia': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tempoInternacao': forms.NumberInput(attrs={'class': 'form-control'}),
+            'localInternacao': forms.TextInput(attrs={'class': 'form-control'}),
+            'custoFixo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'custoVariavel': forms.NumberInput(attrs={'class': 'form-control'}),
+            'custoTotal': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
 
 class LinhasCirurgiaForm(forms.ModelForm):
     class Meta:
         model = LinhasCirurgia
         fields = ['codigo', 'descricao', 'unidade', 'custoUnitario', 'quantidade', 'total']
+        labels = {
+            'codigo': 'Código',
+            'descricao': 'Descrição',
+            'unidade': 'Unidade',
+            'custoUnitario': 'Custo Unitário',
+            'quantidade': 'Quantidade',
+            'total': 'Total'
+        }
+        widgets = {
+            'codigo': forms.Select(attrs={'class': 'form-control'}),
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'unidade': forms.Select(attrs={'class': 'form-control'}),
+            'custoUnitario': forms.NumberInput(attrs={'class': 'form-control'}),
+            'quantidade': forms.NumberInput(attrs={'class': 'form-control'}),
+            'total': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
 
 LinhasCirurgiaFormSet = inlineformset_factory(Cirurgia, LinhasCirurgia, form=LinhasCirurgiaForm, extra=1, can_delete=True)
 

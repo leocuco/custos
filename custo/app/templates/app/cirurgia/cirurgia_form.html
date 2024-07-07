@@ -9,7 +9,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">Cirurgia</li>
-                <li class="breadcrumb-item active">Cirurgia</li>
+                <li class="breadcrumb-item active">{% if object.pk %}Editar Cirurgia{% else %}Criar Cirurgia{% endif %}</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -25,25 +25,23 @@
                         <h5 class="card-title "></h5>
 
                         <!-- No Labels Form -->
-                        <h1>Familia</h1>
+                        <h1>Cirurgia</h1>
                         <hr>
 
                         <form method="post">
                             {% csrf_token %}
                             <div class="container">
-                                <h2>{% if object.pk %}Editar Cirurgia{% else
-                                    %}Criar Cirurgia{% endif %}</h2>
                                 <!-- Campos para os dados da cirurgia -->
                                 <div class="form-row">
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-6">
                                         {{ form.portecirurgico.label_tag }}
                                         {{ form.portecirurgico }}
                                     </div>
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-6">
                                         {{ form.procedimento.label_tag }}
                                         {{ form.procedimento }}
                                     </div>
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-12">
                                         {{ form.paciente.label_tag }}
                                         {{ form.paciente }}
                                     </div>
