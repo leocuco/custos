@@ -35,7 +35,7 @@ class ProdutoForm(forms.ModelForm):
             'codigo': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
             'preco': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'pattern': '[0-9]+([\.][0-9]+)?', 'required': 'required'}),
             'descricao': forms.TextInput(attrs={'class': 'form-control col-md-12', 'required': 'required'}),
-            'unidade' : forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'unidade' : forms.Select(attrs={'class': 'form-control', 'required': 'required'}),
             'familia': forms.Select(attrs={'class': 'form-control col-md-12', 'required': True}),
             'tipoCusto':forms.Select(attrs={'class': 'form-control col-md-12', 'required': True})
         }
