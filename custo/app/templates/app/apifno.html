@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FT Detail</title>
+</head>
+<body>
+    <h1>FT Detail</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Nome Documento</th>
+                <th>FNO</th>
+                <th>Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if data %}
+            <tr>
+                <td>{{ data.fdata }}</td>
+                <td>{{ data.nmdoc }}</td>
+                <td>{{ data.fno }}</td>
+                <td>{{ data.nome }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No data available</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</body>
+</html>

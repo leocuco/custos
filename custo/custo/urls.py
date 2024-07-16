@@ -92,6 +92,7 @@ urlpatterns = [
     path('portecirurgia/<int:id>/', views.portecirurgia, name='portecirurgia'),
     path('portecirurgia/editar/<int:id>/', views.editar_portecirurgia, name='editar_portecirurgia'),
     path('portecirurgia/remover/<int:id>/', views.eliminar_portecirurgia, name='eliminar_portecirurgia'),
-    #Procedimento Cirurgia
-
+    #api
+    path('ft/', views.ft_view, name='ft_view'),
+    path('ft/<int:fno>/', views.ft_detail_view, name='ft_detail_view'),
 ]

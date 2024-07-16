@@ -696,3 +696,44 @@ def get_produto_details(pk):
         'custo_unitario': produto.preco,
     }
     return JsonResponse(data)
+
+
+
+
+import requests
+from django.shortcuts import render
+from django.http import Http404
+
+def fetch_ft_data():
+    try:
+        response = requests.get('http://127.0.0.1:8000/ft')  # Substitua pelo endereço da sua API FastAPI
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
+        return []
+    
+def ft_view(request):
+    data = fetch_ft_data()
+    return render(request, 'app/api.html', {'data': data})
+
+
+def fetch_ft_data_by_fno(fno):
+    try:
+        url = f'http://127.0.0.1:8000/ft/{fno}'  # Substitua pelo endereço da sua API FastAPI
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching data by fno: {e}")
+        return None
+
+def ft_detail_view(request,fno):
+    data = fetch_ft_data_by_fno(fno)
+    return render(request, 'app/apifno.html', {'data': data})
+
+# def ft_detail_view(request, fno):
+#     data = fetch_ft_data_by_fno(fno)
+#     if data is None:
+#         raise Http404("Resource not found")
+#     return render(request, 'app/api.html', {'data': data})
