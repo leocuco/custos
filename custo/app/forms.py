@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext_lazy as _
 from app.models import Produto, Procedimento, Unidade, Especialidade, Paciente , Cirurgia, Familia, LinhasCirurgia, PorteCirurgico , PorteCirurgicoCirurgia
 from django.forms import inlineformset_factory , formset_factory
+
 class BootstrapAuthenticationForm(AuthenticationForm):
     """Authentication form which uses boostrap CSS."""
     username = forms.CharField(max_length=254,
