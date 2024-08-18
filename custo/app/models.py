@@ -87,7 +87,6 @@ class Paciente(models.Model):
         verbose_name = 'Paciente'
 
 
-
 class PorteCirurgico(models.Model):
     descricao = models.CharField(max_length=150)
     tempo_minutos = models.IntegerField(null=True, blank=True)
